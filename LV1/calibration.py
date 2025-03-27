@@ -102,6 +102,16 @@ if successes == max_images:
 
             img_undistorted = cv2.undistort(img_clone, camera_matrix, dist_coeffs, None)
 
+            img_gray = cv2.cvtColor(img_undistorted, cv2.COLOR_BGR2GRAY)
+
+            found, corners = cv2.findChessboardCorners(img_gray, board_size, 
+                cv2.CALIB_CB_ADAPTIVE_THRESH + cv2.CALIB_CB_FAST_CHECK + cv2.CALIB_CB_NORMALIZE_IMAGE)
+
+            if found:
+                corners2 = cv2.cornerSubPix(img_gray, corners, (11, 11), (-1, -1), (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001))
+                cv2.drawChessboardCorners(img_undistorted, board_size, corners2, found)
+                image_points.append(corners2.reshape(-1,2))
+
             cv2.imshow('Undistorted view', img_undistorted)
             if c == 27:
                 break
