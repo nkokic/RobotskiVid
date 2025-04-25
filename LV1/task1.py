@@ -27,10 +27,16 @@ def click(event, x,y, flags, param):
     global point, pressed
     if event == cv2.EVENT_LBUTTONDOWN:
         point = (x,y)
-        cv2.circle(img_undistorted_cap, point,radius,colour,lineWidth)
-        cv2.imshow("Frame", img_undistorted_cap)
-
+        cv2.circle(canny_capture, point,radius,colour,lineWidth)
         points.append([x, y])
+
+        if (len(points) >= 6):
+            canny_capture[0:points[4][1], :] = 0
+            canny_capture[:, 0:points[4][0]] = 0
+            canny_capture[points[5][1]:, :] = 0
+            canny_capture[:, points[5][0]:] = 0
+            
+        cv2.imshow("Frame", canny_capture)
          
 #event handler
 cv2.namedWindow("Frame")      #must match the imshow 1st argument
@@ -46,25 +52,25 @@ while True:
 
     img_undistorted = cv2.undistort(img_clone, camera_matrix, dist_coeffs, None)
     threshold = 50
-    test = cv2.Canny(img_undistorted.copy(), threshold, threshold*3)
-    cv2.imshow('Undistorted view', test)
+    canny_img = cv2.Canny(img_undistorted.copy(), threshold, threshold*3)
+    cv2.imshow('Undistorted view', canny_img)
 
     if c == ord('p'):        
-        img_undistorted_cap = img_undistorted.copy()
+        canny_capture = canny_img.copy()
         points.clear()
-        cv2.imshow("Frame", img_undistorted_cap)
+        cv2.imshow("Frame", canny_capture)
 
     if c == 27:
         break
 
-    if len(points) >= 4:
+    if len(points) >= 6:
         break
 
 # 250 x 170
 worldPoints = np.array([[0, 0, 0], [0, 0.17, 0], [0.25, 0, 0], [0.25, 0.17, 0]])
 
 worldPoints = np.asarray(worldPoints, dtype=np.float32).reshape(-1, 3)
-imagePoints = np.asarray(points, dtype=np.float32).reshape(-1, 2)
+imagePoints = np.asarray(points[0:4], dtype=np.float32).reshape(-1, 2)
 
 isSuccess, rotation, position = cv2.solvePnP(worldPoints, imagePoints, camera_matrix, dist_coeffs)
 
