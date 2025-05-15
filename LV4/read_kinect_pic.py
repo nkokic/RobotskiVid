@@ -2,7 +2,7 @@ import numpy as np
 
 def read_kinect_pic(depth_path, image_shape):
     depth_map = np.zeros(image_shape)
-    depth_image = np.zeros(image_shape[:2], dtype=np.uint8)
+    depth_image = np.zeros(image_shape[:2], dtype=np.uint32)
 
     point_3d_array = []
 
