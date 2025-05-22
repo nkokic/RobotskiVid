@@ -29,7 +29,7 @@ def GetActor(inputPD, R, G, B, scale):
 bunnyOG_PD = GetPD("LV5\\models\\bunny.ply")
 bunny1_PD = GetPD("LV5\\models\\bunny_t5_parc.ply")
 
-totalIterations = 20
+totalIterations = 50
 pointPairs = 100
 
 ##################################################################
